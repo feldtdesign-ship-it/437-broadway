@@ -1,0 +1,10 @@
+[{"fare_class_category":"OMNY - Full Fare","payment_method":"omny","riders":"2597221.0"}
+,{"fare_class_category":"OMNY - Seniors & Disability","payment_method":"omny","riders":"232702.0"}
+,{"fare_class_category":"OMNY - Other","payment_method":"omny","riders":"122527.0"}
+,{"fare_class_category":"OMNY - Fair Fare","payment_method":"omny","riders":"120190.0"}
+,{"fare_class_category":"OMNY - Students","payment_method":"omny","riders":"107894.0"}
+,{"fare_class_category":"Metrocard - Other","payment_method":"metrocard","riders":"12503.0"}
+,{"fare_class_category":"Metrocard - Full Fare","payment_method":"metrocard","riders":"2439.0"}
+,{"fare_class_category":"Metrocard - Unlimited 30-Day","payment_method":"metrocard","riders":"1416.0"}
+,{"fare_class_category":"Metrocard - Seniors & Disability","payment_method":"metrocard","riders":"671.0"}
+,{"fare_class_category":"Metrocard - Unlimited 7-Day","payment_method":"metrocard","riders":"228.0"}]

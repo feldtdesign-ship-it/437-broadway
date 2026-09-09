@@ -1,0 +1,110 @@
+[
+ {
+  "i": 0,
+  "dist": 69,
+  "name": "Canal St @ Broadway",
+  "id": "b6369867-aa5f-4df3-8af3-dcac2eb0dfc8",
+  "lat": 40.719655,
+  "lon": -74.001842,
+  "file": "ring/c00.jpg"
+ },
+ {
+  "i": 1,
+  "dist": 103,
+  "name": "Grand St @ Broadway",
+  "id": "63e79f0b-7dea-4c8e-864c-f3315f9cc62c",
+  "lat": 40.720855,
+  "lon": -74.000655,
+  "file": "ring/c01.jpg"
+ },
+ {
+  "i": 2,
+  "dist": 309,
+  "name": "Broome St and Lafayette St",
+  "id": "85837859-3e5d-4e1b-8740-1c2ea3ed5662",
+  "lat": 40.721091,
+  "lon": -73.998074,
+  "file": "ring/c02.jpg"
+ },
+ {
+  "i": 3,
+  "dist": 354,
+  "name": "Baxter St @ Canal Street",
+  "id": "96be7098-dda4-42da-bfe2-55bc5c6b94fb",
+  "lat": 40.7175537302479,
+  "lon": -73.999310720446,
+  "file": "ring/c03.jpg"
+ },
+ {
+  "i": 4,
+  "dist": 366,
+  "name": "Canal St @ 6 Ave",
+  "id": "c6d82dbd-1c49-478f-819f-a38c1826b628",
+  "lat": 40.721872,
+  "lon": -74.005346,
+  "file": "ring/c04.jpg"
+ },
+ {
+  "i": 5,
+  "dist": 377,
+  "name": "Kenmare St @ Cleveland pl",
+  "id": "93dea5a7-a63f-4415-ae12-f32b62540f11",
+  "lat": 40.72147,
+  "lon": -73.9974,
+  "file": "ring/c05.jpg"
+ },
+ {
+  "i": 6,
+  "dist": 433,
+  "name": "Varick St @ Beach St",
+  "id": "56b99f9c-1f5c-47e2-8c85-d34de045a4ce",
+  "lat": 40.720434,
+  "lon": -74.006699,
+  "file": "ring/c06.jpg"
+ },
+ {
+  "i": 7,
+  "dist": 446,
+  "name": "Varick St @ Laight St",
+  "id": "dce301aa-b937-4041-b9fc-960abcd79178",
+  "lat": 40.721808,
+  "lon": -74.006436,
+  "file": "ring/c07.jpg"
+ },
+ {
+  "i": 8,
+  "dist": 533,
+  "name": "Worth Street @ Lafayette Street",
+  "id": "ebec9de9-3f56-477a-a413-2e0a09b2b6ba",
+  "lat": 40.715579,
+  "lon": -74.003036,
+  "file": "ring/c08.jpg"
+ },
+ {
+  "i": 9,
+  "dist": 551,
+  "name": "Varick St @ Watt St",
+  "id": "23bcc0dd-d395-45fe-8106-676ba7293208",
+  "lat": 40.72379,
+  "lon": -74.006138,
+  "file": "ring/c09.jpg"
+ },
+ {
+  "i": 10,
+  "dist": 567,
+  "name": "Worth St @ Centre St",
+  "id": "07b8616e-373e-4ec9-89cc-11cad7d59fcb",
+  "lat": 40.715157,
+  "lon": -74.00213,
+  "file": "ring/c10.jpg"
+ },
+ {
+  "i": 11,
+  "dist": 582,
+  "name": "Hudson St @ Erickson Pl/Beach",
+  "id": "8c1ea3b6-0db6-4222-ba50-2545f8f82d71",
+  "lat": 40.720694,
+  "lon": -74.008455,
+  "file": "ring/c11.jpg"
+ }
+]

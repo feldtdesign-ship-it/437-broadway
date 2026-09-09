@@ -1,0 +1,535 @@
+<title>Canal & Broadway Pulse</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#0F1112; --panel:#171A1C; --panel-2:#1F2326; --rule:#2B3034;
+  --ink:#EDEAE2; --ink-2:#A9A79F; --muted:#6E6D68;
+  --accent:#FCCC0A; --accent-dim:#8A7212; --accent-ink:#141200;
+  --rain:#4D89C4; --cold:#7FA7C9; --snow:#E8F1F8; --heat:#E0603A;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --disp:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{background:var(--ground)}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+main{max-width:1040px;margin:0 auto;padding:28px 24px 80px;display:flex;flex-direction:column;gap:64px}
+h1,h2{font-family:var(--disp);margin:0;line-height:.95;text-wrap:balance;letter-spacing:.005em}
+h2{font-size:44px;font-weight:700;text-transform:uppercase;margin-bottom:14px}
+h2 small{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;font-weight:400}
+p{margin:0;max-width:62ch}
+p+p{margin-top:12px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+b{font-weight:600;color:var(--ink)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* masthead */
+.mast{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--rule);padding-bottom:12px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);flex-wrap:wrap;gap:8px}
+.mast .clock{color:var(--accent)}
+
+/* hero gauge */
+.hero{display:grid;grid-template-columns:1fr 240px;gap:32px;align-items:end}
+.hero .big{font-family:var(--disp);font-weight:900;font-size:clamp(120px,22vw,240px);line-height:.85;color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.hero .unit{font-family:var(--disp);font-weight:700;font-size:clamp(28px,4vw,44px);text-transform:uppercase;line-height:1;margin-top:10px}
+.hero .sub{margin-top:14px;color:var(--ink-2);max-width:52ch}
+.hero .sub b{color:var(--ink)}
+.dial{display:flex;flex-direction:column;gap:6px}
+.dial svg{width:100%;height:auto;display:block}
+.dial .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.dial .curve{fill:none;stroke:var(--ink-2);stroke-width:1.5}
+.dial .fill{fill:var(--accent);opacity:.12}
+.dial .now{fill:var(--accent)}
+.dial .nowline{stroke:var(--accent);stroke-width:1;stroke-dasharray:2 3}
+.dial .ax{font-family:var(--mono);font-size:10px;fill:var(--muted)}
+
+/* day scrub */
+.scrub{position:relative;background:var(--panel);padding:18px 18px 10px;border-top:2px solid var(--accent)}
+.scrub svg{width:100%;height:auto;display:block;cursor:crosshair;touch-action:none}
+.scrub .l{fill:none;stroke-width:2}
+.scrub .l.wk{stroke:var(--accent)}
+.scrub .l.sa{stroke:var(--ink)}
+.scrub .l.su{stroke:var(--ink-2);stroke-dasharray:4 4}
+.scrub .grid{stroke:var(--rule);stroke-width:1}
+.scrub .ax{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.scrub .cursor{stroke:var(--ink);stroke-width:1;opacity:.6}
+.readout{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+.readout div{border-top:1px solid var(--rule);padding-top:8px}
+.readout .k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.readout .v{font-family:var(--disp);font-size:40px;font-weight:700;line-height:1;margin-top:4px;font-variant-numeric:tabular-nums}
+.readout .v.wk{color:var(--accent)}
+.readout .v.su{color:var(--ink-2)}
+.legend{display:flex;gap:18px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin-top:10px;flex-wrap:wrap}
+.legend i{display:inline-block;width:18px;height:2px;vertical-align:middle;margin-right:6px;background:var(--ink)}
+.legend i.wk{background:var(--accent)} .legend i.su{background:var(--ink-2)}
+
+/* heatmap */
+.heat{display:grid;grid-template-columns:44px 1fr;gap:6px 8px;align-items:center}
+.heat .row{display:grid;grid-template-columns:repeat(24,1fr);gap:2px}
+.heat .cell{aspect-ratio:1/1.15;background:var(--accent);border-radius:1px;transition:transform .12s}
+.heat .cell:hover{transform:scale(1.35);outline:1px solid var(--ink);z-index:2;position:relative}
+.heat .d{font-family:var(--mono);font-size:11px;color:var(--ink-2);letter-spacing:.08em}
+.heat .hrs{grid-column:2;display:grid;grid-template-columns:repeat(24,1fr);font-family:var(--mono);font-size:10px;color:var(--muted)}
+.heat .hrs span:nth-child(3n+2),.heat .hrs span:nth-child(3n+3){visibility:hidden}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--ground);font-family:var(--mono);font-size:12px;padding:6px 9px;border-radius:2px;z-index:9;white-space:nowrap;display:none}
+
+/* year */
+.year{display:grid;grid-template-columns:1fr;gap:26px}
+.bars{position:relative}
+.bars svg{width:100%;height:auto;display:block}
+.bars .b{fill:var(--accent);transition:opacity .15s}
+.bars .b.w{fill:var(--cold)}
+.bars .b:hover{opacity:.7}
+.bars .ax{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.bars .grid{stroke:var(--rule)}
+.bars .lbl{font-family:var(--disp);font-weight:700;font-size:20px;fill:var(--ink)}
+.multi svg{width:100%;height:auto;display:block}
+.multi .y{fill:none;stroke:var(--ink-2);stroke-width:1.2;opacity:.45}
+.multi .y.hot{stroke:var(--accent);stroke-width:2.5;opacity:1}
+.multi .y.cov{stroke:var(--rain);opacity:.8}
+.multi .ax{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.multi .ylab{font-family:var(--disp);font-size:16px;font-weight:700}
+.multi .ylab.hot{fill:var(--accent)} .multi .ylab.cov{fill:var(--rain)} .multi .ylab.dim{fill:var(--ink-2)}
+.multi .grid{stroke:var(--rule)}
+
+/* weather */
+.wx{background:var(--panel);padding:18px;border-top:2px solid var(--accent)}
+.wx svg{width:100%;height:auto;display:block}
+.wx .dot{fill:var(--ink-2);opacity:.55;transition:opacity .2s,fill .2s,r .2s}
+.wx.mode-rain .dot.rain{fill:var(--rain);opacity:1}
+.wx.mode-snow .dot.snow{fill:var(--snow);opacity:1}
+.wx.mode-cold .dot.cold{fill:var(--cold);opacity:1}
+.wx.mode-hot .dot.hot{fill:var(--heat);opacity:1}
+.wx.mode-rain .dot:not(.rain),.wx.mode-snow .dot:not(.snow),.wx.mode-cold .dot:not(.cold),.wx.mode-hot .dot:not(.hot){opacity:.18}
+.wx .ax{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.wx .grid{stroke:var(--rule)}
+.modes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.modes button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:transparent;color:var(--ink-2);border:1px solid var(--rule);padding:7px 12px;cursor:pointer;border-radius:2px}
+.modes button:hover{color:var(--ink);border-color:var(--ink-2)}
+.modes button.on{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.finding{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:baseline;margin-top:12px;border-top:1px solid var(--rule);padding-top:10px}
+.finding .v{font-family:var(--disp);font-size:56px;font-weight:900;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums;min-width:120px}
+.finding .t{color:var(--ink-2)}
+
+
+/* measured */
+.meas{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px;margin-top:18px}
+.sw{background:var(--panel);border-top:2px solid var(--accent);padding:18px}
+.sw .k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.sw h3{font-family:var(--disp);font-size:26px;font-weight:700;text-transform:uppercase;margin:6px 0 14px;line-height:1}
+.bars2{display:grid;grid-template-columns:52px 1fr 64px;gap:8px 12px;align-items:center;font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+.bars2 .bar{height:18px;background:var(--accent);opacity:.9}
+.bars2 .bar.sat{background:var(--ink)}
+.bars2 .v{font-family:var(--disp);font-size:22px;font-weight:700;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
+.sw .t{font-size:14.5px;color:var(--ink-2);margin-top:12px;line-height:1.45}
+.stair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+.stair div{border-top:1px solid var(--rule);padding-top:8px}
+.stair .v{font-family:var(--disp);font-size:40px;font-weight:900;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.stair .l{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.est{margin-top:28px;display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:start;border-top:1px solid var(--rule);padding-top:18px}
+.est .v{font-family:var(--disp);font-size:72px;font-weight:900;line-height:.9;color:var(--accent);font-variant-numeric:tabular-nums;white-space:nowrap}
+.est .v small{display:block;font-size:20px;font-weight:700;color:var(--ink);margin-top:6px;letter-spacing:.02em}
+@media (max-width:600px){.est{grid-template-columns:1fr}}
+
+
+/* buy */
+.buy{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2px;background:var(--rule);margin-top:18px}
+.buy div{background:var(--panel);padding:20px}
+.buy div.pick{border-top:3px solid var(--accent)}
+.buy .k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.buy h3{font-family:var(--disp);font-size:28px;font-weight:700;text-transform:uppercase;margin:6px 0 4px;line-height:1}
+.buy .cost{font-family:var(--disp);font-size:44px;font-weight:900;line-height:1;color:var(--accent);margin:10px 0 4px;font-variant-numeric:tabular-nums}
+.buy .cost small{font-size:16px;font-weight:700;color:var(--ink);letter-spacing:.02em;margin-left:4px}
+.buy .t{font-size:14.5px;color:var(--ink-2);line-height:1.45;margin-top:8px}
+.buy .t b{color:var(--ink)}
+
+
+/* ring */
+.ring{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:18px}
+.ring .c{display:flex;flex-direction:column;gap:8px}
+.ring .c img{width:100%;aspect-ratio:352/240;object-fit:cover;display:block;border:1px solid var(--rule);background:#000}
+.ring .c .cap{font-family:var(--mono);font-size:12px;color:var(--ink-2);line-height:1.45}
+.ring .c .cap b{color:var(--ink);font-weight:500}
+.ring .tag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:2px;background:var(--rule);color:var(--ink-2);margin-top:4px}
+.ring .tag.usable{background:var(--accent);color:var(--accent-ink)} .ring .tag.fogged{background:var(--heat);color:#fff}
+
+/* camera */
+.cam{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.9fr);gap:28px;align-items:center}
+.cam .frame{position:relative;aspect-ratio:352/240;background:#000;border:1px solid var(--rule);overflow:hidden}
+.cam .frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .25s}
+.cam .frame img.on{opacity:1}
+.cam .stamp{position:absolute;left:0;right:0;bottom:0;font-family:var(--mono);font-size:12px;color:var(--accent);background:rgba(15,17,18,.75);padding:6px 10px;display:flex;justify-content:space-between}
+.cam .ctrl{display:flex;gap:8px;margin-top:10px}
+.cam .ctrl button{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:transparent;color:var(--ink-2);border:1px solid var(--rule);padding:6px 12px;cursor:pointer;border-radius:2px}
+.cam .ctrl button:hover{color:var(--ink)}
+
+/* stack */
+.stack{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2px;background:var(--rule)}
+.stack div{background:var(--panel);padding:18px}
+.stack .k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.stack .v{font-family:var(--disp);font-size:48px;font-weight:900;line-height:1;margin:8px 0 6px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.stack .v em{font-style:normal;color:var(--accent)}
+.stack .t{font-size:14.5px;color:var(--ink-2);line-height:1.45}
+.src{font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.8;border-top:1px solid var(--rule);padding-top:14px}
+.src a{color:var(--ink-2)}
+.caveat{border-left:3px solid var(--accent);padding:4px 0 4px 16px;color:var(--ink-2);font-size:15.5px}
+@media (max-width:760px){.hero{grid-template-columns:1fr}.cam{grid-template-columns:1fr}.readout .v{font-size:30px}h2{font-size:36px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<main>
+<div class="mast">
+  <span>437 Broadway · SoHo · west side, northwest corner of Howard St</span>
+  <span class="clock" id="clock">--:-- NYC</span>
+</div>
+
+<section class="hero">
+  <div>
+    <div class="eyebrow">Right now, typical for this hour</div>
+    <div class="big" id="big">0</div>
+    <div class="unit">people a minute into Canal St station</div>
+    <p class="sub" id="sub">Loading the hour pattern.</p>
+  </div>
+  <div class="dial">
+    <span class="lbl" id="dial-lbl">Today's curve</span>
+    <svg id="dial" viewBox="0 0 240 150"></svg>
+  </div>
+</section>
+
+<section>
+  <h2><small>The day</small>Five to six on a weekday is the wall</h2>
+  <p>Drag across the curve. Weekday entries at the Canal St complex climb all afternoon and hit a hard peak in the hour after five, as the district's twenty-one thousand office workers leave. Saturday is flatter and stays high later. Sunday is the same shape at four fifths the size.</p>
+  <div class="scrub" style="margin-top:18px">
+    <svg id="scrub" viewBox="0 0 980 300"></svg>
+    <div class="readout">
+      <div><span class="k">Weekday</span><div class="v wk" id="r-wk">–</div></div>
+      <div><span class="k">Saturday</span><div class="v" id="r-sa">–</div></div>
+      <div><span class="k">Sunday</span><div class="v su" id="r-su">–</div></div>
+    </div>
+    <div class="legend"><span><i class="wk"></i>Weekday</span><span><i></i>Saturday</span><span><i class="su"></i>Sunday</span><span id="r-hr" style="margin-left:auto;color:var(--ink)">–</span></div>
+  </div>
+  <p class="eyebrow" style="margin-top:10px">Entries per hour, average over June to August 2026. Exits are roughly the same again.</p>
+</section>
+
+<section>
+  <h2><small>The week</small>168 hours at the corner</h2>
+  <p>Every cell is one hour of one weekday, summer 2026. Brighter is busier. Hover for the number.</p>
+  <div class="heat" id="heat" style="margin-top:18px"></div>
+</section>
+
+<section class="year">
+  <div>
+    <h2><small>The year</small>February is the floor, December the ceiling</h2>
+    <p>Twenty months of station entries. Winter months are steel. Hover a bar.</p>
+  </div>
+  <div class="bars"><svg id="bars" viewBox="0 0 980 300"></svg></div>
+  <div id="multi-wrap">
+    <p><b>Every year since 2020, on one scale.</b> Each line is one year, January to December, as a share of that year's busiest month. The shape barely changes. What changes is the height.</p>
+    <div class="multi" style="margin-top:14px"><svg id="multi" viewBox="0 0 980 320"></svg></div>
+  </div>
+</section>
+
+<section>
+  <h2><small>Weather</small>Does rain empty the block?</h2>
+  <p>One dot per day, January 2025 to August 2026. Pick a condition to light those days up and see how far their average falls from the rest.</p>
+  <div class="wx" id="wx" style="margin-top:18px">
+    <div class="modes">
+      <button data-mode="rain">Rain, over 0.25 in</button>
+      <button data-mode="snow">Snow days</button>
+      <button data-mode="cold">High under 35 F</button>
+      <button data-mode="hot">High over 90 F</button>
+      <button data-mode="none">Clear</button>
+    </div>
+    <svg id="wxsvg" viewBox="0 0 980 300"></svg>
+    <div class="finding"><div class="v" id="f-v">–</div><div class="t" id="f-t">Choose a condition.</div></div>
+  </div>
+</section>
+
+
+<section>
+  <h2><small>Measured</small>What was actually counted near the door</h2>
+  <p>The city's 2021 environmental review of the SoHo/NoHo rezoning sent counters to the sidewalks around Canal and Broadway. These are the closest real sidewalk numbers that exist. Counted March 2021, then factored to pre-pandemic levels using DOT and NYCT data.</p>
+  <div class="meas">
+    <div class="sw">
+      <span class="k">Sidewalk S2 · one block from the corner</span>
+      <h3>Canal St, north side, Lafayette to Broadway</h3>
+      <div class="bars2">
+        <span>AM</span><div class="bar" style="width:26%"></div><span class="v">673</span>
+        <span>Midday</span><div class="bar" style="width:40%"></div><span class="v">1,038</span>
+        <span>PM</span><div class="bar" style="width:54%"></div><span class="v">1,398</span>
+        <span>Sat</span><div class="bar sat" style="width:100%"></div><span class="v">2,590</span>
+      </div>
+      <p class="t">Pedestrians in the peak hour on one sidewalk. Effective width only <b>4.8 ft</b> because a subway elevator sits in it, so it runs at Level of Service D on Saturdays: crowded enough to count as an impact. Peak hours: 8:30 to 9:30 am, 1 to 2 pm, 5 to 6 pm, and Saturday 1:45 to 2:45 pm.</p>
+    </div>
+    <div class="sw">
+      <span class="k">Subway stairs at Broadway &amp; Canal · 85 m from the door</span>
+      <h3>People pouring onto Broadway</h3>
+      <div class="stair">
+        <div><div class="v">1,348</div><div class="l">Up the NE-corner stair, AM peak hour</div></div>
+        <div><div class="v">1,305</div><div class="l">Down the same stair, PM peak hour</div></div>
+        <div><div class="v">325</div><div class="l">Up the NW-corner stair, AM peak hour</div></div>
+        <div><div class="v">309</div><div class="l">Down the NW-corner stair, PM peak hour</div></div>
+      </div>
+      <p class="t">Stair S12/M3 is the wide 14 ft stair on the northeast corner, the main street door of the R/W station. Stair P14 serves the downtown platform on the northwest corner, the side 437 is on. Both run at Level of Service A: plenty of room.</p>
+    </div>
+    <div class="sw">
+      <span class="k">The sidewalk at the door · measured from city survey layers</span>
+      <h3>13 ft curb to building</h3>
+      <div class="stair">
+        <div><div class="v">13.2<span style="font-size:20px"> ft</span></div><div class="l">Total width, Broadway west side</div></div>
+        <div><div class="v">9.7<span style="font-size:20px"> ft</span></div><div class="l">Effective width, CEQR buffers taken off</div></div>
+        <div><div class="v">75<span style="font-size:20px"> ft</span></div><div class="l">Lot frontage on Broadway</div></div>
+        <div><div class="v">45<span style="font-size:20px"> ft</span></div><div class="l">Roadbed, curb to curb</div></div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;margin-top:14px;font-family:var(--mono);font-size:12px;color:var(--ink-2)">
+        <tr style="color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-size:10.5px"><td style="padding:4px 0;border-bottom:1px solid var(--rule)">Peak hour</td><td style="border-bottom:1px solid var(--rule)">Same as Canal S2</td><td style="border-bottom:1px solid var(--rule)">If 1.5× busier</td></tr>
+        <tr><td style="padding:5px 0">AM</td><td>201 ft²/ped · <b>LOS B</b></td><td>134 · <b>B</b></td></tr>
+        <tr><td style="padding:5px 0">Midday</td><td>130 · <b>LOS B</b></td><td>87 · <b>C</b></td></tr>
+        <tr><td style="padding:5px 0">PM</td><td>97 · <b>LOS B</b></td><td>65 · <b>C</b></td></tr>
+        <tr><td style="padding:5px 0">Saturday</td><td>52 · <b>LOS C</b></td><td>35 · <b>D</b></td></tr>
+      </table>
+      <p class="t">Width from the NYC planimetric sidewalk polygon and curb line, checked against the OpenStreetMap building outline; the two agree to within a foot. The city's own building footprint is drawn 9 ft into the sidewalk and was discarded. Effective width is 13.2 ft less a 1.5 ft curb buffer and a 2 ft window-shopping buffer, before any poles or grates. Level of Service uses the same platoon-adjusted method the FEIS used for Canal St, calibrated to its published figures. B is comfortable, C is busy, D is what Canal already hits on Saturdays.</p>
+    </div>
+  </div>
+  <div class="est">
+    <div class="v">10k<small>weekday</small></div>
+    <div>
+      <div class="v" style="font-size:72px">25 to 30k<small>Saturday</small></div>
+      <p class="t" style="margin-top:14px">Passers per day on one sidewalk, estimated for the block. Method from the CEQR expansion rule: take the measured peak-hour count on sidewalk S2 and divide by the share of the day that hour carries at the station, 14% on a weekday at 5 pm and 9 to 10% on a Saturday afternoon. Broadway is the district's spine and is at least as busy as Canal's north sidewalk, so treat these as a floor for the west sidewalk at 437. Still an estimate. The only thing that beats it is a counter on the door.</p>
+    </div>
+  </div>
+</section>
+
+
+<section>
+  <h2><small>The ring</small>Every camera that sees the corridor</h2>
+  <p>Twelve DOT cameras sit within 600 m. These five look at Broadway, Canal, or the parallel street. The rest point at Tribeca and the Holland Tunnel approaches. Frames pulled 6:59 pm, 9 Sep 2026. The published page can only hold snapshots; the live wall file loads the real feeds.</p>
+  <div class="ring" id="ring"></div>
+</section>
+
+<section class="cam">
+  <div>
+    <div class="frame" id="frame">
+      <div class="stamp"><span>CANAL ST @ BROADWAY · DOT CAM</span><span id="stamp">–</span></div>
+    </div>
+    <div class="ctrl"><button id="play">Pause</button><span class="eyebrow" style="align-self:center">Six frames, 20 s apart, 9 Sep 2026</span></div>
+  </div>
+  <div>
+    <h2><small>The camera</small>Two minutes on the corner</h2>
+    <p>The nearest public camera, 84 m from the door. This loop is the whole archive that exists: the city keeps no recordings, and operators re-aim the lens through the day. It faced east at 6:05 pm and south at 6:14 pm.</p>
+    <p style="margin-top:12px">Between twenty and twenty-five people are visible in each frame. A count from a 352 by 240 image is a sketch, not a number.</p>
+  </div>
+</section>
+
+<section>
+  <h2><small>What is known</small>The stack of numbers</h2>
+  <div class="stack" style="margin-top:18px">
+    <div><span class="k">District, people present per day</span><div class="v"><em>66.9</em>k</div><div class="t">Placer.ai, July 2025, for the SoHo Broadway district, Canal to Houston, both sides. 437 is at its south end.</div></div>
+    <div><span class="k">Same figure, July 2019</span><div class="v">49.9k</div><div class="t">Placer.ai. The district is a third busier than before the pandemic.</div></div>
+    <div><span class="k">Counter at Broadway &amp; Prince</span><div class="v"><em>+15</em>%</div><div class="t">SoHo Broadway Initiative sidewalk counter, change since 2023.</div></div>
+    <div><span class="k">Station entries, weekday</span><div class="v" id="s-wk">–</div><div class="t">Canal St complex, summer 2026 average. Saturday <span id="s-sa">–</span>, Sunday <span id="s-su">–</span>.</div></div>
+    <div><span class="k">Seasonal swing, 2025</span><div class="v"><em>27</em>%</div><div class="t">February 823k entries to December 1.13M at the station.</div></div>
+    <div><span class="k">At the door, estimated</span><div class="v"><em>10k</em> / 25k+</div><div class="t">Weekday and Saturday passers on a 13 ft sidewalk, expanded from the measured Canal St count. The lot: 433 to 437 Broadway, 7 storeys, built 2012 inside the SoHo Cast-Iron Historic District, 9,100 sq ft of retail. Placer.ai sells the per-address number.</div></div>
+    <div><span class="k">Who is walking out</span><div class="v"><em>81</em>%</div><div class="t">Full fare at the Canal St complex, summer 2026. Seniors and disability 7%, students 3%, Fair Fares 4%. Over 99% tap with OMNY.</div></div>
+    <div><span class="k">Bus stop at the door</span><div class="v">~30<span style="font-size:22px">/day</span></div><div class="t">M55 southbound, Broadway at Grand, 49 m away. Boardings plus alightings, summer 2026. The bus is not a factor.</div></div>
+    <div><span class="k">Cars on the block</span><div class="v">~4k</div><div class="t">Broadway southbound, a 2013 DOT sample of two days between Spring and Prince. Canal westbound at Lafayette ran about 13k a day in the same year. Old and thin.</div></div>
+    <div><span class="k">Crashes at Broadway &amp; Canal</span><div class="v">5 · 4 · 5</div><div class="t">Pedestrian and cyclist injury crashes in 2016, 2017, 2018. DOT lists the corner as a high-crash location. 23 total crashes in 2018.</div></div>
+  </div>
+  <p class="caveat" style="margin-top:22px">Placer.ai builds its numbers from location pings of tens of millions of phones running apps with an opted-in location kit, strips the identifiers, matches pings to building footprints, and scales the sample to the population. Any place that sees fifty or more panel devices gets a figure. A storefront on Broadway qualifies.</p>
+</section>
+
+
+<section>
+  <h2><small>Still to buy</small>The one number nobody has given us</h2>
+  <p>Everything above is public. None of it counts the people who pass this door. One vendor sells that number for any address, and two cheaper routes get part of the way.</p>
+  <div class="buy">
+    <div class="pick">
+      <span class="k">Recommended</span>
+      <h3>Placer.ai, per-address pull</h3>
+      <div class="cost">$99<small>to $299 a month</small></div>
+      <p class="t">Monthly visits to 433 to 437 Broadway going back years, with dwell time, where visitors came from, and how the block compares with Prince St. Built from phone location pings, scaled to population. <b>Placer does not publish prices</b>; the figures are third-party listings for the Starter and Professional tiers. Enterprise is quote only. A <b>free login</b> shows the district dashboard but not the address. One month on a paid tier is enough to export what this page needs.</p>
+    </div>
+    <div>
+      <span class="k">Partial, backward-looking</span>
+      <h3>Traffic Cam Archive</h3>
+      <div class="cost">Per clip<small>price on checkout</small></div>
+      <p class="t">Sells stored video from the DOT cameras, roughly the last <b>90 to 150 days</b>. One weekday and one Saturday a month back to June would give a summer baseline to count from. Coverage of the Canal St camera is not confirmed on their map.</p>
+    </div>
+    <div>
+      <span class="k">Free, forward-looking</span>
+      <h3>Snapshot job on the camera</h3>
+      <div class="cost">$0<small>about 1 GB a year</small></div>
+      <p class="t">A scheduled task saves a frame from the Canal St camera every ten minutes. Around <b>53,000 frames a year</b>. A simple detector counts heads in the crosswalk later. Owned data, but the first full season takes a season to collect, and operators re-aim the lens.</p>
+    </div>
+  </div>
+</section>
+
+<p class="src">Sources · <a href="https://data.ny.gov/">MTA hourly ridership, station complex 623, data.ny.gov</a> · <a href="https://open-meteo.com/">Open-Meteo daily archive, 40.72 N 74.00 W</a> · <a href="https://webcams.nyctmc.org/">NYC DOT camera network</a> · <a href="https://sohobroadway.org/soho-broadway-foot-traffic-continues-to-grow/">SoHo Broadway Initiative, Placer.ai figures</a> · <a href="https://www.placer.ai/resources/our-data">Placer.ai, Our Data</a> · <a href="https://www.growthfactor.ai/resources/blog/placer-ai-pricing">Placer.ai pricing, third-party listing</a> · <a href="https://newyorkcity.trafficcamarchive.com/">Traffic Cam Archive</a> · <a href="https://www.nyc.gov/assets/planning/download/pdf/applicants/env-review/soho-noho/14-feis.pdf">SoHo/NoHo Neighborhood Plan FEIS, Chapter 14 Transportation, 2021</a> · <a href="https://data.cityofnewyork.us/Transportation/Automated-Traffic-Volume-Counts/7ym2-wayt">NYC DOT Automated Traffic Volume Counts</a> · <a href="https://data.cityofnewyork.us/City-Government/NYC-Planimetric-Database-Sidewalk/52n9-sdep">NYC Planimetric Database, Sidewalk and Curbs</a> · <a href="https://www.openstreetmap.org/#map=20/40.72024/-74.00157">OpenStreetMap</a> · <a href="https://data.cityofnewyork.us/City-Government/Primary-Land-Use-Tax-Lot-Output-PLUTO-/64uk-42ks">PLUTO, lot 1002310014</a> · <a href="https://data.ny.gov/Transportation/MTA-Bus-Hourly-Ridership-Beginning-2025/fvdm-uavx">MTA bus stop-level ridership</a> · Assumed Manhattan; there is also a 437 Broadway in Williamsburg.</p>
+</main>
+
+<div class="tip" id="tip"></div>
+
+<script>
+const D = __DATA__;
+const $ = id => document.getElementById(id);
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const DOWN = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- hour pattern helpers ---------- */
+const WK = Array.from({length:24},(_,h)=> [1,2,3,4,5].reduce((s,d)=>s+D.hourly[d][h],0)/5);
+const SA = D.hourly[6], SU = D.hourly[0];
+function rateAt(dow, t){ // t = fractional hour, returns entries/hour interpolated
+  const arr = D.hourly[dow];
+  const h0 = Math.floor(t)%24, h1=(h0+1)%24, f=t-Math.floor(t);
+  return arr[h0]*(1-f)+arr[h1]*f;
+}
+
+/* ---------- clock + hero ---------- */
+let shown = 0;
+function nyNow(){
+  const p = new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'numeric',minute:'numeric',second:'numeric',weekday:'long',hour12:false}).formatToParts(new Date());
+  const g = k => p.find(x=>x.type===k).value;
+  return {h:+g('hour')%24, m:+g('minute'), s:+g('second'), wd:DOWN.indexOf(g('weekday'))};
+}
+function tick(){
+  const n = nyNow();
+  const t = n.h + n.m/60;
+  const perHr = rateAt(n.wd, t);
+  const perMin = perHr/60;
+  const hh = ((n.h+11)%12+1), ap = n.h<12?'am':'pm';
+  $('clock').textContent = `${DOWN[n.wd].slice(0,3)} ${hh}:${String(n.m).padStart(2,'0')}:${String(n.s).padStart(2,'0')} ${ap} NYC`;
+  const target = perMin;
+  shown = reduce ? target : shown + (target-shown)*0.15;
+  $('big').textContent = shown.toFixed(1);
+  $('sub').innerHTML = `A typical <b>${DOWN[n.wd]}</b> at this hour runs about <b>${fmt(perHr)}</b> entries an hour at the Canal St complex, summer 2026 average. Exits add about the same again. Peak for this day is <b>${fmt(Math.max(...D.hourly[n.wd]))}</b> an hour.`;
+  drawDial(n.wd, t);
+}
+function drawDial(dow, t){
+  const W=240,H=150,pl=8,pr=8,pt=10,pb=22, arr=D.hourly[dow], mx=Math.max(...WK,...SA,...SU);
+  const x=h=>pl+(W-pl-pr)*h/23, y=v=>H-pb-(H-pt-pb)*v/mx;
+  let path='', area=`M${x(0)},${H-pb}`;
+  arr.forEach((v,h)=>{ path+=(h?'L':'M')+x(h).toFixed(1)+','+y(v).toFixed(1)+' '; area+=`L${x(h).toFixed(1)},${y(v).toFixed(1)}`; });
+  area+=`L${x(23)},${H-pb}Z`;
+  const nx=x(t), ny=y(rateAt(dow,t));
+  $('dial').innerHTML = `<path class="fill" d="${area}"/><path class="curve" d="${path}"/>
+    <line class="nowline" x1="${nx}" x2="${nx}" y1="${pt}" y2="${H-pb}"/><circle class="now" cx="${nx}" cy="${ny}" r="4"/>
+    <text class="ax" x="${x(0)}" y="${H-6}">12am</text><text class="ax" x="${x(12)}" y="${H-6}" text-anchor="middle">noon</text><text class="ax" x="${x(23)}" y="${H-6}" text-anchor="end">11pm</text>`;
+  $('dial-lbl').textContent = DOWN[dow]+"'s curve";
+}
+tick(); setInterval(tick, reduce?1000:100);
+
+/* ---------- scrub ---------- */
+(function(){
+  const W=980,H=300,pl=54,pr=16,pt=14,pb=30, mx=6000;
+  const x=h=>pl+(W-pl-pr)*h/23, y=v=>H-pb-(H-pt-pb)*v/mx;
+  const line=(arr,cls)=>`<path class="l ${cls}" d="${arr.map((v,h)=>(h?'L':'M')+x(h).toFixed(1)+','+y(v).toFixed(1)).join(' ')}"/>`;
+  let g='';
+  for(let v=0;v<=mx;v+=1000){ g+=`<line class="grid" x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${pl-8}" y="${y(v)+4}" text-anchor="end">${v?v/1000+'k':'0'}</text>`; }
+  for(let h=0;h<24;h+=3){ const l=h===0?'12am':h<12?h+'am':h===12?'noon':(h-12)+'pm'; g+=`<text class="ax" x="${x(h)}" y="${H-10}" text-anchor="middle">${l}</text>`; }
+  const svg=$('scrub');
+  svg.innerHTML = g + line(SU,'su')+line(SA,'sa')+line(WK,'wk') + `<line id="cur" class="cursor" x1="${x(17)}" x2="${x(17)}" y1="${pt}" y2="${H-pb}"/>`;
+  function setHour(t){
+    t=Math.max(0,Math.min(23,t));
+    const cur=$('cur'); cur.setAttribute('x1',x(t)); cur.setAttribute('x2',x(t));
+    const w=[1,2,3,4,5].reduce((s,d)=>s+rateAt(d,t),0)/5;
+    $('r-wk').textContent=fmt(w); $('r-sa').textContent=fmt(rateAt(6,t)); $('r-su').textContent=fmt(rateAt(0,t));
+    const h=Math.floor(t), m=Math.round((t-h)*60); const hh=((h+11)%12+1), ap=h<12?'am':'pm';
+    $('r-hr').textContent=`${hh}:${String(m).padStart(2,'0')} ${ap} · entries per hour`;
+  }
+  setHour(17);
+  const move=e=>{ const r=svg.getBoundingClientRect(); const px=(e.touches?e.touches[0].clientX:e.clientX)-r.left; const t=((px/r.width)*W-pl)/(W-pl-pr)*23; setHour(t); };
+  svg.addEventListener('mousemove',move); svg.addEventListener('touchmove',e=>{move(e);e.preventDefault();},{passive:false}); svg.addEventListener('touchstart',move,{passive:true});
+})();
+
+/* ---------- heatmap ---------- */
+(function(){
+  const el=$('heat'), tip=$('tip'); const order=[1,2,3,4,5,6,0]; const mx=Math.max(...order.flatMap(d=>D.hourly[d]));
+  let html='';
+  order.forEach(d=>{
+    html+=`<span class="d">${DOWN[d].slice(0,3)}</span><div class="row">`;
+    D.hourly[d].forEach((v,h)=>{ const a=Math.max(.04,Math.pow(v/mx,.8)); html+=`<div class="cell" style="opacity:${a.toFixed(3)}" data-t="${DOWN[d]} ${h===0?'12am':h<12?h+'am':h===12?'noon':(h-12)+'pm'} · ${fmt(v)} entries/hr"></div>`; });
+    html+='</div>';
+  });
+  html+='<span></span><div class="hrs">'+Array.from({length:24},(_,h)=>`<span>${h===0?'12a':h<12?h+'a':h===12?'12p':(h-12)+'p'}</span>`).join('')+'</div>';
+  el.innerHTML=html;
+  el.addEventListener('mousemove',e=>{ const c=e.target.closest('.cell'); if(!c){tip.style.display='none';return;} tip.style.display='block'; tip.textContent=c.dataset.t; tip.style.left=(e.clientX+14)+'px'; tip.style.top=(e.clientY-30)+'px'; });
+  el.addEventListener('mouseleave',()=>tip.style.display='none');
+})();
+
+/* ---------- year bars ---------- */
+(function(){
+  const pts=D.months, W=980,H=300,pl=60,pr=16,pt=40,pb=44, n=pts.length, top=1250000;
+  const bw=(W-pl-pr)/n, y=v=>H-pb-(H-pt-pb)*v/top;
+  let s='';
+  for(let g=0;g<=top;g+=250000){ s+=`<line class="grid" x1="${pl}" x2="${W-pr}" y1="${y(g)}" y2="${y(g)}"/><text class="ax" x="${pl-8}" y="${y(g)+4}" text-anchor="end">${g?(g/1e6).toFixed(2)+'M':'0'}</text>`; }
+  const MON=['J','F','M','A','M','J','J','A','S','O','N','D'];
+  const hi=pts.reduce((a,b)=>b[1]>a[1]?b:a), lo=pts.reduce((a,b)=>b[1]<a[1]?b:a);
+  pts.forEach((p,i)=>{ const m=+p[0].slice(5); const x=pl+i*bw; const w=[12,1,2].includes(m);
+    s+=`<rect class="b${w?' w':''}" x="${(x+3).toFixed(1)}" y="${y(p[1]).toFixed(1)}" width="${(bw-6).toFixed(1)}" height="${(H-pb-y(p[1])).toFixed(1)}"><title>${p[0]} · ${fmt(p[1])} entries</title></rect>`;
+    s+=`<text class="ax" x="${x+bw/2}" y="${H-pb+16}" text-anchor="middle">${MON[m-1]}</text>`;
+    if(m===1||i===0) s+=`<text class="ax" x="${x+3}" y="${H-pb+32}">${p[0].slice(0,4)}</text>`;
+    if(p===hi||p===lo) s+=`<text class="lbl" x="${x+bw/2}" y="${y(p[1])-8}" text-anchor="middle">${(p[1]/1e6).toFixed(2)}M</text>`;
+  });
+  $('bars').innerHTML=s;
+})();
+
+/* ---------- multi-year ---------- */
+(function(){
+  const wrap=$('multi-wrap'); if(!D.hist||!D.hist.length){wrap.style.display='none';return;}
+  const byY={}; D.hist.concat(D.months).forEach(p=>{ const y=p[0].slice(0,4), m=+p[0].slice(5); (byY[y]=byY[y]||{})[m]=p[1]; });
+  const years=Object.keys(byY).filter(y=>Object.keys(byY[y]).length>=6).sort();
+  const W=980,H=320,pl=40,pr=70,pt=14,pb=30, x=m=>pl+(W-pl-pr)*(m-1)/11, y=v=>H-pb-(H-pt-pb)*v;
+  let s=''; for(let g=0;g<=1;g+=.25){ s+=`<line class="grid" x1="${pl}" x2="${W-pr}" y1="${y(g)}" y2="${y(g)}"/><text class="ax" x="${pl-6}" y="${y(g)+4}" text-anchor="end">${Math.round(g*100)}%</text>`; }
+  const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  MON.forEach((m,i)=>s+=`<text class="ax" x="${x(i+1)}" y="${H-8}" text-anchor="middle">${m}</text>`);
+  years.forEach(yr=>{ const o=byY[yr]; const mx=Math.max(...Object.values(o)); const ms=Object.keys(o).map(Number).sort((a,b)=>a-b);
+    const d=ms.map((m,i)=>(i?'L':'M')+x(m).toFixed(1)+','+y(o[m]/mx).toFixed(1)).join(' ');
+    const cls=yr==='2025'?'hot':yr==='2020'?'cov':''; s+=`<path class="y ${cls}" d="${d}"/>`;
+    const last=ms[ms.length-1]; s+=`<text class="ylab ${cls||'dim'}" x="${x(last)+8}" y="${y(o[last]/mx)+5}">${yr}</text>`;
+  });
+  $('multi').innerHTML=s;
+})();
+
+/* ---------- weather ---------- */
+(function(){
+  const rows=D.daily; if(!rows||!rows.length){$('wx').style.display='none';return;}
+  const W=980,H=300,pl=54,pr=16,pt=14,pb=30, n=rows.length, top=60000;
+  const x=i=>pl+(W-pl-pr)*i/(n-1), y=v=>H-pb-(H-pt-pb)*v/top;
+  let s=''; for(let g=0;g<=top;g+=20000){ s+=`<line class="grid" x1="${pl}" x2="${W-pr}" y1="${y(g)}" y2="${y(g)}"/><text class="ax" x="${pl-8}" y="${y(g)+4}" text-anchor="end">${g?g/1000+'k':'0'}</text>`; }
+  rows.forEach((r,i)=>{ if(r[0].slice(8)==='01'){ const m=+r[0].slice(5,7); s+=`<text class="ax" x="${x(i)}" y="${H-10}" text-anchor="middle">${['J','F','M','A','M','J','J','A','S','O','N','D'][m-1]}${m===1?' '+r[0].slice(0,4):''}</text>`; } });
+  const cls=r=>[(r[3]>0.25?'rain':''),(r[4]>0?'snow':''),(r[2]<35?'cold':''),(r[2]>90?'hot':'')].filter(Boolean).join(' ');
+  rows.forEach((r,i)=>{ s+=`<circle class="dot ${cls(r)}" cx="${x(i).toFixed(1)}" cy="${y(r[1]).toFixed(1)}" r="2.6"><title>${r[0]} · ${fmt(r[1])} entries · high ${Math.round(r[2])} F · ${r[3].toFixed(2)} in rain${r[4]>0?' · snow':''}</title></circle>`; });
+  $('wxsvg').innerHTML=s;
+  const wx=$('wx'), names={rain:'rain days (over a quarter inch)',snow:'snow days',cold:'days with a high under 35 F',hot:'days with a high over 90 F'};
+  const avg=a=>a.reduce((s,r)=>s+r[1],0)/a.length;
+  function setMode(m){ wx.className='wx'+(m&&m!=='none'?' mode-'+m:''); document.querySelectorAll('.modes button').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));
+    if(!m||m==='none'){ $('f-v').textContent='–'; $('f-t').textContent='Choose a condition.'; return; }
+    const inn=rows.filter(r=>cls(r).split(' ').includes(m)), out=rows.filter(r=>!cls(r).split(' ').includes(m));
+    if(!inn.length){ $('f-v').textContent='0'; $('f-t').textContent='No such days in the range.'; return; }
+    const d=(avg(inn)/avg(out)-1)*100;
+    $('f-v').textContent=(d>0?'+':'')+d.toFixed(0)+'%';
+    $('f-t').innerHTML=`<b>${inn.length}</b> ${names[m]}, averaging <b>${fmt(avg(inn))}</b> entries against <b>${fmt(avg(out))}</b> on the other ${out.length} days.`;
+  }
+  document.querySelectorAll('.modes button').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+  setMode('rain');
+})();
+
+/* ---------- camera loop ---------- */
+(function(){
+  const fr=D.frames, el=$('frame'); fr.forEach((f,i)=>{ const im=document.createElement('img'); im.src=f.src; im.alt='DOT camera frame, Canal St at Broadway, '+f.t; if(!i) im.className='on'; el.insertBefore(im, el.firstChild); });
+  const imgs=el.querySelectorAll('img'); let i=0, on=!reduce, tm;
+  function step(){ imgs.forEach((im,k)=>im.classList.toggle('on',k===i)); $('stamp').textContent=fr[i].t; i=(i+1)%fr.length; }
+  step(); function run(){ if(on) tm=setInterval(step,700); } run();
+  $('play').textContent = on?'Pause':'Play';
+  $('play').addEventListener('click',()=>{ on=!on; $('play').textContent=on?'Pause':'Play'; clearInterval(tm); if(on) run(); });
+})();
+
+
+/* ---------- ring ---------- */
+(function(){ const el=$('ring'); if(!D.ring) return; el.innerHTML=D.ring.map(c=>`<div class="c"><img src="${c.src}" alt="DOT camera ${c.name}"><div class="cap"><b>${c.name}</b> · ${c.dist} m<br>${c.desc}<br><span class="tag ${c.tag.toLowerCase()}">${c.tag}</span></div></div>`).join(''); })();
+
+/* ---------- stack numbers ---------- */
+(function(){ const sum=a=>a.reduce((s,v)=>s+v,0); $('s-wk').textContent=(sum(WK)/1000).toFixed(1)+'k'; $('s-sa').textContent=fmt(sum(SA)); $('s-su').textContent=fmt(sum(SU)); })();
+</script>
